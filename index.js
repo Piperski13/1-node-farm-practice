@@ -43,22 +43,52 @@ const url = require('url');
 /////////////////////////////////////////////
 // SERVER
 
+const replaceTemplate = (temp,product) =>{
+  let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+  output = output.replace(/{%IMAGE%}/g, product.image);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%FROM%}/g, product.from);
+  output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+  output = output.replace(/{%QUANTITY%}/g, product.quantity);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+  output = output.replace(/{%ID%}/g, product.id);
+  
+  if(!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+  return output;
+}
+
+
+const tempOverview = fs.readFileSync(`${__dirname}/starter/templates/template-overview.html`,'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/starter/templates/template-product.html`,'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/starter/templates/template-card.html`,'utf-8');
+
 const data = fs.readFileSync(`${__dirname}/starter/dev-data/data.json`,'utf-8');
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req,res)=>{
   const pathName = req.url;
+  //overview page
   if(pathName === '/' || pathName === '/overview'){
-    console.log(pathName);
-    res.end('This is the OVERVIEW!');
-  }else if (pathName === '/products') {
+    res.writeHead(200,{
+      'Content-Type': 'text/html'
+    });
+    const cardsHtml = dataObj.map( element => replaceTemplate(tempCard,element));
+    console.log(cardsHtml);
+    res.end(tempOverview);
+  }
+  //products page
+  else if (pathName === '/products') {
     res.end('This is the PRODUCTS!');
-  }else if (pathName === '/api') {
+  }
+  //api
+  else if (pathName === '/api') {
     res.writeHead(200,{
       'Content-Type': 'application/json'
-    })
+    });
     res.end(data);
-  }else{
+  }
+  // error
+  else{
     res.writeHead(404,{
       'Content-Type': 'text/html',
       'my-own-type': 'hello-world'
