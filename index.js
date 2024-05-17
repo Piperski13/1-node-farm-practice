@@ -15,7 +15,7 @@ const url = require('url');
 // async function readFiles(){
 //   const data1 = await fs.readFile('./starter/txt/start.txt','utf-8');
 //   console.log(data1);
-//   const data2 = await fs.readFile(`./starter/txt/${data1}.txt`, 'utf-8');
+//   const data2 = await fs.readFile(`./starter/txt/${data1}.txt`, 'utf-8');`
 //   console.log(data2);
 //   const data3 = await fs.readFile(`./starter/txt/append.txt`, 'utf-8');
 //   console.log(data3);
@@ -72,9 +72,9 @@ const server = http.createServer((req,res)=>{
     res.writeHead(200,{
       'Content-Type': 'text/html'
     });
-    const cardsHtml = dataObj.map( element => replaceTemplate(tempCard,element));
-    console.log(cardsHtml);
-    res.end(tempOverview);
+    const cardsHtml = dataObj.map( element => replaceTemplate(tempCard,element)).join('');
+    const output =  tempOverview.replace('{%PRODUCT_CARDS%}',cardsHtml);
+    res.end(output);
   }
   //products page
   else if (pathName === '/products') {
