@@ -88,7 +88,7 @@ const server = http.createServer((req,res)=>{
   // error
   else{
     res.writeHead(404,{
-      'Content-Type': 'text/html',
+      'Content-Type': "text/html",
       'my-own-type': 'hello-world'
     });
     res.end('<h1>Page not found</h2>');
